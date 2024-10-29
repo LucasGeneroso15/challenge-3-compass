@@ -11,3 +11,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+  kafka:
+    bootstrap-servers: kafka:9092
+    topic: msusers_topic
+server:
+  port: 8080

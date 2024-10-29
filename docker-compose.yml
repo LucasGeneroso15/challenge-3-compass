@@ -1,0 +1,72 @@
+version: '3.9'
+services:
+  msusers:
+    build: 
+      context: ./msusers
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - kafka
+    networks:
+      - msusers-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3308/challenge_3_ms_users?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_KAFKA_TOPIC: msusers_topic
+  msnotify:
+    build:
+      context: ./msnotify
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - kafka
+    networks:
+      - msusers-network
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_GROUP_ID: msnotify-group
+      SPRING_KAFKA_TOPIC: msusers_topic
+  mysql:
+    image: mysql:8.0.39
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: challenge_3_ms_users
+      MYSQL_TCP_PORT: 3308
+    ports:
+      - "3308:3308"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - msusers-network
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - msusers-network
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - msusers-network
+volumes:
+  mysql-data:
+
+networks:
+  msusers-network:
+    driver: bridge
