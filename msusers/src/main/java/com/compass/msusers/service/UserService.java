@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,9 +50,9 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
-        String message = String.format("'%s', CREATE", user.getUsername());
-        kafkaTemplate.send("msusers_topic", message);
-        System.out.println("Sent: " + message);
+       String message = String.format("'%s', CREATE", user.getUsername());
+       kafkaTemplate.send("msusers_topic", message);
+       System.out.println("Sent: " + message);
 
         return user;
     }
@@ -76,8 +75,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        String message = String.format("'%s', UPDATE", user.getUsername());
-        kafkaTemplate.send("msusers_topic", message);
-        System.out.println("Sent: " + message);
+       String message = String.format("'%s', UPDATE", user.getUsername());
+       kafkaTemplate.send("msusers_topic", message);
+       System.out.println("Sent: " + message);
     }
 }

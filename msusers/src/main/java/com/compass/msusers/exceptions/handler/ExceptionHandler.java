@@ -1,5 +1,6 @@
 package com.compass.msusers.exceptions.handler;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.compass.msusers.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 @ControllerAdvice
 public class ExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler({UsernameNotFoundException.class})
+    @org.springframework.web.bind.annotation.ExceptionHandler({UsernameNotFoundException.class, org.springframework.security.core.userdetails.UsernameNotFoundException.class})
     public ResponseEntity<ErrorMessage> notFoundException(RuntimeException e, HttpServletRequest request) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -36,5 +37,14 @@ public class ExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler({JWTVerificationException.class, JwtGenerationTokenException.class})
+    public ResponseEntity<ErrorMessage> unauthorized(RuntimeException e, HttpServletRequest request) {
+        log.error("Api Error - ", e);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, e.getMessage()));
     }
 }
