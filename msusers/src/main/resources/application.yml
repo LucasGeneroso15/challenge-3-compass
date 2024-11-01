@@ -14,9 +14,17 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     topic: msusers_topic
+
 server:
   port: 8080
 api:
   security:
     token:
       secret: desafio3compassuol
+
+springdoc:
+  pathsToMatch:
+    - /api/**/**
+    - /api/users/**
+  swagger-ui:
+    use-root-path: true

@@ -58,10 +58,6 @@ public class UserService {
        return user;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
     public void editPassword(String username, String oldPassword, String newPassword) {
         if (newPassword.equals(oldPassword)) {
             throw new EqualPasswordInvalidException("The new password cannot be the same as the current password. Please check and try again.");
