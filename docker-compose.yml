@@ -16,6 +16,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_KAFKA_TOPIC: msusers_topic
+      
   msnotify:
     build:
       context: ./msnotify
@@ -24,12 +25,14 @@ services:
       - "8081:8081"
     depends_on:
       - kafka
+      - mongo
     networks:
       - msusers-network
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_KAFKA_GROUP_ID: msnotify-group
       SPRING_KAFKA_TOPIC: msusers_topic
+      MONGO_URI: mongodb://mongo:27017/challenge_3_mongodb
   mysql:
     image: mysql:8.0.39
     command: mysqld --default-authentication-plugin=mysql_native_password
@@ -45,6 +48,21 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - msusers-network
+
+  mongo:
+    image: mongo:latest
+    container_name: "mongo"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: challenge_3_mongodb
+      MONGO_TCP_PORT: 27017
+      MONGO_HOST: host
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - msusers-network
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
     environment:
@@ -66,7 +84,8 @@ services:
       - msusers-network
 volumes:
   mysql-data:
-
+  mongo_data:
+    
 networks:
   msusers-network:
     driver: bridge

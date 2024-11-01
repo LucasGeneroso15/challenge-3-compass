@@ -10,6 +10,7 @@ import com.compass.msusers.entity.util.Address;
 import com.compass.msusers.repository.UserRepository;
 import com.compass.msusers.web.openFeign.ViaCepClientOpenFeign;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -52,9 +54,8 @@ public class UserService {
 
        String message = String.format("'%s', CREATE", user.getUsername());
        kafkaTemplate.send("msusers_topic", message);
-       System.out.println("Sent: " + message);
-
-        return user;
+       log.info("Sent: {}", message);
+       return user;
     }
 
     public List<User> findAll() {
@@ -77,6 +78,6 @@ public class UserService {
 
        String message = String.format("'%s', UPDATE", user.getUsername());
        kafkaTemplate.send("msusers_topic", message);
-       System.out.println("Sent: " + message);
+       log.info("Sent: {}", message);
     }
 }
