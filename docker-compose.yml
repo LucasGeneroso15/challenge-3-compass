@@ -1,9 +1,7 @@
 version: '3.9'
 services:
   msusers:
-    build: 
-      context: ./msusers
-      dockerfile: Dockerfile
+    image: lucasgeneroso1510/msusers:latest
     ports:
       - "8080:8080"
     depends_on:
@@ -19,9 +17,7 @@ services:
       SPRING_KAFKA_TOPIC: msusers_topic
       
   msnotify:
-    build:
-      context: ./msnotify
-      dockerfile: Dockerfile
+    image: lucasgeneroso1510/msnotify:latest
     ports:
       - "8081:8081"
     depends_on:
