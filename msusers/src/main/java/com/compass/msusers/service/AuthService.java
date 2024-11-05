@@ -2,11 +2,12 @@ package com.compass.msusers.service;
 
 import com.compass.msusers.entity.User;
 import com.compass.msusers.entity.util.JwtUserDetails;
+import com.compass.msusers.exceptions.UsernameNotFoundException;
 import com.compass.msusers.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 @Service

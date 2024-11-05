@@ -1,5 +1,7 @@
 package com.compass.msusers.web.controller;
 
+import com.compass.msusers.entity.util.JwtUserDetails;
+import com.compass.msusers.exceptions.InvalidPrincipalUserException;
 import com.compass.msusers.web.dto.UserCreateDto;
 import com.compass.msusers.entity.User;
 import com.compass.msusers.entity.util.Address;
@@ -18,6 +20,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,7 +72,14 @@ public class UserController {
             }
     )
     @PutMapping("/update-password")
-    public ResponseEntity<Void> updatePassword(@Valid @RequestBody UserPasswordDto dto) {
+    public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal UserDetails user, @Valid @RequestBody UserPasswordDto dto) {
+
+        String username = user.getUsername();
+
+        if (!username.equals(dto.getUsername())) {
+            throw new InvalidPrincipalUserException("The password can only be changed by the authenticated user");
+        }
+
         userService.editPassword(dto.getUsername(), dto.getOldPassword(), dto.getNewPassword());
         return ResponseEntity.noContent().build();
     }
