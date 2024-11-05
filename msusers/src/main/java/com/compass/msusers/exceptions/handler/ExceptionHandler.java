@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class ExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler({JWTVerificationException.class, JwtGenerationTokenException.class})
+    @org.springframework.web.bind.annotation.ExceptionHandler({JWTVerificationException.class, JwtGenerationTokenException.class, InvalidPrincipalUserException.class})
     public ResponseEntity<ErrorMessage> unauthorized(RuntimeException e, HttpServletRequest request) {
         log.error("Api Error - ", e);
         return ResponseEntity

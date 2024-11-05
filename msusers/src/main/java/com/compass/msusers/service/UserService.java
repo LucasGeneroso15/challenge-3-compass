@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,10 @@ public class UserService {
                 response.getLocalidade(),
                 response.getUf()
         );
+    }
+
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
     }
 
     public User create(User user) {

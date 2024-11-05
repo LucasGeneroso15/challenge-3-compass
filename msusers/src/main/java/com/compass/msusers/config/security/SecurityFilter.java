@@ -34,7 +34,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             JwtUserDetails userDetails = new JwtUserDetails(user);
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
